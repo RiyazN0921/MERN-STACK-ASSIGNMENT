@@ -7,21 +7,21 @@ const secretKey = process.env.JWT_SECRET_KEY
 
 exports.signup = async (req, res, next) => {
   try {
-    const { email, password } = req.body
+    const { username, password } = req.body
 
-    const existingUser = await User.findOne({ email })
+    const existingUser = await User.findOne({ username })
     if (existingUser) {
-      throw new CustomError('Email already exists!', 400)
+      throw new CustomError('Username already exists!', 400)
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const newUser = new User({ email, password: hashedPassword })
+    const newUser = new User({ username, password: hashedPassword })
     await newUser.save()
 
     res
       .status(200)
-      .json({ message: 'Signup successful', sucess: true, data: newUser })
+      .json({ message: 'Signup successful', success: true, data: newUser })
   } catch (error) {
     next(error)
   }
@@ -29,9 +29,9 @@ exports.signup = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body
+    const { username, password } = req.body
 
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ username })
     if (!user) {
       throw new CustomError('Invalid Credentials!', 401)
     }
@@ -42,14 +42,14 @@ exports.login = async (req, res, next) => {
     }
 
     const token = await generateAuthToken(
-      { userId: user._id, email: user.email },
+      { userId: user._id, username: user.username },
       secretKey,
       '1h',
     )
 
     res
       .status(200)
-      .json({ token, message: 'Login successful', sucess: true, data: user })
+      .json({ token, message: 'Login successful', success: true, data: user })
   } catch (error) {
     next(error)
   }

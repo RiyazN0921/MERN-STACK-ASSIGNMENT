@@ -1,25 +1,22 @@
 const mongoose = require('mongoose')
-const { validatePassword, validateEmail } = require('../utils/validation.utils')
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    validate: {
-      validator: validateEmail,
-      message: 'Invalid email format',
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 6,
     },
   },
-  password: {
-    type: String,
-    required: true,
-    validate: {
-      validator: validatePassword,
-      message: 'Password should be at least 6 characters long',
-    },
+  {
+    timestamps: true,
   },
-})
+)
 
 const User = mongoose.model('User', userSchema)
 

@@ -26,6 +26,15 @@ app.get('/', (req, res, next) => {
   }
 })
 
+const allowedOrigins = [process.env.FRONTEND_URL]
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  }),
+)
+app.options('*', cors()) // cors
+
 app.use('/api/user', require('./src/routes/user.routes'))
 
 app.use('/api/task', require('./src/routes/tasks.routes'))
